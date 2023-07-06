@@ -6,6 +6,14 @@
  *  data - вхідні дані.
  */
 function checkData(data) {
+  try {
+    if (Object.keys(data).length !== 0) {
+      return data;
+    }
+    throw new Error("Об'єкт пустий");
+  } catch (error) {
+    return error.message;
+  }
   // Якщо об'єкт не пустий повертаємо дані
   // Інакше створюємо помилку,в якості тексту помилки ми використовуємо рядок "Об'єкт пустий".
   // Якщо виникла помилка, повертаємо її повідомлення.
@@ -26,7 +34,12 @@ console.log(checkData({ name: "John", age: 30, city: "New York" }));
  *  jsonStr - JSON-рядок для аналізу.
  */
 function parseJson(jsonStr) {
-  // Спроба розпарсити JSON-рядок.
+  try {
+    const parsed = JSON.parse(jsonStr);
+    return parsed;
+  } catch (error) {
+    return error.message;
+  } // Спроба розпарсити JSON-рядок.
   // Якщо рядок має невірний формат, виникне помилка, яку ми обробляємо у блоку catch.
   // Повертаємо отриманий об'єкт
   // Якщо виникла помилка, повертаємо її повідомлення.
@@ -53,7 +66,15 @@ console.log(parseJson(invalidJson));
  *  age - вік користувача.
  */
 function getAge(age) {
-  // Спроба отримати вік користувача.
+  try {
+    if (age < 0) {
+      throw { message: "Вік не може бути менше 0!", name: "AgeError" };
+    } else {
+      return `Вік користувача: ${age}`;
+    }
+  } catch (error) {
+    return { error: error.message, name: error.name };
+  } // Спроба отримати вік користувача.
   // Якщо вік менше 0, виникне помилка, яку ми обробляємо у блоку catch.
   // Генеруємо помилку, якщо вік менше 0 з повідомленням Вік не може бути менше 0!.
   // До помилки дадаємо властивість name зі значенням "AgeError"
@@ -79,7 +100,16 @@ console.log(getAge(20));
  *  id - ID книги.
  */
 function getBookById(books, id) {
-  // Спроба знайти книгу по ID та записати в змінну book.
+  try {
+    const book = books.find((book) => book.id === id);
+    if (!book) {
+      throw new TypeError(`Книга з ID ${id} не знайдена!`);
+    } else {
+      return `Книнга: ${book.title}`;
+    }
+  } catch (error) {
+    return error.name + ": " + error.message;
+  } // Спроба знайти книгу по ID та записати в змінну book.
   // Якщо книга не знайдена, генерується TypeError з повідомленням Книга з ID ${id} не знайдена!.
   // Повертаємо book
   // Повертаємо текстове представлення помилки
@@ -119,7 +149,16 @@ console.log(
  *  encodedString - Рядок для декодування.
  */
 function decodeURIComponentWrapper(encodedString) {
-  // Спроба декодувати рядок
+  try {
+    const decoded = decodeURIComponent(encodedString);
+    return decoded;
+  } catch (error) {
+    if (error instanceof URIError) {
+      return `Помилка декодування URI`;
+    } else {
+      return error.message;
+    }
+  } // Спроба декодувати рядок
   // Повертаємо декодований рядок
   // Якщо виникла помилка, і ії назва дорівнює URIError повертаємо помилку про неправильний URI формат з повідомленням Помилка декодування URI,
   //  інкше повертаємо текстове представлення помилки
@@ -138,12 +177,22 @@ console.log(decodeURIComponentWrapper("%E0%A4%A")); // виведе інформ
  *  numbers - Масив чисел для пошуку.
  */
 function findEvenNumber(numbers) {
-  // Створюємо змінну evenNumber без значення
-  // Шукаємо перше число, що ділиться на 2 без остачі, та записуємо в нашу змінну.
-  // Якщо такого числа немає, кидаємо помилку з повідомлення У масиві немає чисел, що діляться на 2 без остачі!.
-  // Якщо число знайдено повертаємо його
-  // Виводимо текстове представлення помилки.
-  // Незалежно від результату, виводимо вихідний масив.
+  let evenNumber; // Створюємо змінну evenNumber без значення
+  try {
+    evenNumber = numbers.find((number) => number % 2 === 0); // Шукаємо перше число, що ділиться на 2 без остачі, та записуємо в нашу змінну.
+    console.log(evenNumber);
+
+    if (evenNumber === undefined) {
+      // Якщо такого числа немає, кидаємо помилку з повідомлення У масиві немає чисел, що діляться на 2 без остачі!.
+      throw new Error("У масиві немає чисел, що діляться на 2 без остачі!"); // Якщо число знайдено повертаємо його
+    } else {
+      return evenNumber;
+    }
+  } catch (error) {
+    return error.message;
+  } finally {
+    return numbers; // Незалежно від результату, виводимо вихідний масив.
+  }
 }
 
 console.log("Завдання: 6 ==============================");
